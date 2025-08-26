@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Triptasoft\FilamentIndonesiaRegions\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class FilamentIndonesiaRegionsCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'filament-indonesia-regions';
 
     public $description = 'My command';
 
