@@ -1,0 +1,25 @@
+name: Build release
+ 
+# Run this workflow when a tag is published that follows the semantic versioning schema.
+on:
+  push:
+    tags:
+      - "*.*.*"
+ 
+jobs:
+ 
+  # ---------------------------------------------------------------------------
+  # Option 1
+  # The following example will show you how to create a release with just
+  # the source code from your repository
+  # ---------------------------------------------------------------------------
+ 
+  build:
+    runs-on: ubuntu-latest
+    steps:
+ 
+      # Create a new release and use the source code from the tag for this release
+      - name: Release and publish release
+        uses: softprops/action-gh-release@v2
+ 
+     # That's it! All done 🚀
