@@ -7,7 +7,13 @@
 
 
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+A Filament plugin that provides Indonesian regional data (Provinces, Regencies, Districts, and Villages) **using the [Wilayah.id API](https://wilayah.id)**.  
+No database or seeder required — all data is fetched on demand from the API.
+
+## Features
+- `Form fields` for provinces, regencies, districts, and villages.
+- `Table column` to display region names.
+- `Infolist entry` with label and code badge.
 
 ## Installation
 
@@ -17,23 +23,10 @@ You can install the package via composer:
 composer require triptasoft/filament-indonesia-regions
 ```
 
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --tag="filament-indonesia-regions-migrations"
-php artisan migrate
-```
-
 You can publish the config file with:
 
 ```bash
 php artisan vendor:publish --tag="filament-indonesia-regions-config"
-```
-
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag="filament-indonesia-regions-views"
 ```
 
 This is the contents of the published config file:
@@ -45,9 +38,31 @@ return [
 
 ## Usage
 
+## Form Field
 ```php
-$filamentIndonesiaRegions = new Triptasoft\FilamentIndonesiaRegions();
-echo $filamentIndonesiaRegions->echoPhrase('Hello, Triptasoft!');
+use Triptasoft\FilamentIndonesiaRegions\Forms\Components\IndonesiaRegionsSelect;
+
+IndonesiaRegionsSelect::make()->label('Wilayah Indonesia'),
+```
+
+## Table Column
+```php
+use Triptasoft\FilamentIndonesiaRegions\Tables\Columns\RegionColumn;
+
+RegionColumn::make('provinsi')->type('provinsi'),
+RegionColumn::make('kabupaten')->type('kabupaten'),
+RegionColumn::make('kecamatan')->type('kecamatan'),
+RegionColumn::make('desa')->type('desa'),
+```
+
+## Infolist Entry
+```php
+use Triptasoft\FilamentIndonesiaRegions\Infolists\Entries\RegionEntry;
+
+RegionEntry::make('provinsi')->type('provinsi'),
+RegionEntry::make('kabupaten')->type('kabupaten'),
+RegionEntry::make('kecamatan')->type('kecamatan'),
+RegionEntry::make('desa')->type('desa'),
 ```
 
 ## Testing
