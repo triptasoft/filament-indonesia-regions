@@ -2,12 +2,12 @@
 
 namespace Triptasoft\FilamentIndonesiaRegions\Forms\Components;
 
-use Filament\Schemas\Components\Fieldset;
 use Filament\Forms\Components\Select;
+use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 
 class IndonesiaRegionsSelect
 {
@@ -20,7 +20,7 @@ class IndonesiaRegionsSelect
 
             return Http::get($url)
                 ->collect('data')
-                ->mapWithKeys(fn($item) => [$item['code'] => $item['name']])
+                ->mapWithKeys(fn ($item) => [$item['code'] => $item['name']])
                 ->toArray();
         });
     }
@@ -31,7 +31,6 @@ class IndonesiaRegionsSelect
             ->schema([
                 Select::make('provinsi')
                     ->label('Provinsi')
-                    ->prefixIcon('heroicon-o-globe-asia-australia')
                     ->options(fn() => self::fetchWilayah('api/provinces'))
                     ->reactive()
                     ->suffix(function ($state, $get) {
@@ -47,16 +46,12 @@ class IndonesiaRegionsSelect
                     ->label('Kabupaten/Kota')
                     ->prefixIcon('heroicon-o-globe-asia-australia')
                     ->options(
-                        fn(Get $get) =>
-                        $get('provinsi')
+                        fn (Get $get) => $get('provinsi')
                             ? self::fetchWilayah("api/regencies/{$get('provinsi')}")
                             : []
                     )
                     ->reactive()
-                    // ->disabled(fn(Get $get) => blank($get('provinsi')))
-                    ->suffix(function ($state, $get) {
-                        return $state ? $state : null;
-                    })
+                    ->disabled(fn(Get $get) => blank($get('provinsi')))
                     ->afterStateUpdated(function (Set $set) {
                         $set('kecamatan', null);
                         $set('desa', null);
@@ -66,24 +61,19 @@ class IndonesiaRegionsSelect
                     ->label('Kecamatan')
                     ->prefixIcon('heroicon-o-globe-asia-australia')
                     ->options(
-                        fn(Get $get) =>
-                        $get('kabupaten')
+                        fn (Get $get) => $get('kabupaten')
                             ? self::fetchWilayah("api/districts/{$get('kabupaten')}")
                             : []
                     )
                     ->reactive()
-                    // ->disabled(fn(Get $get) => blank($get('kabupaten')))
-                    ->suffix(function ($state, $get) {
-                        return $state ? $state : null;
-                    })
+                    ->disabled(fn(Get $get) => blank($get('kabupaten')))
                     ->afterStateUpdated(fn(Set $set) => $set('desa', null)),
 
                 Select::make('desa')
                     ->label('Desa/Kelurahan')
                     ->prefixIcon('heroicon-o-globe-asia-australia')
                     ->options(
-                        fn(Get $get) =>
-                        $get('kecamatan')
+                        fn (Get $get) => $get('kecamatan')
                             ? self::fetchWilayah("api/villages/{$get('kecamatan')}")
                             : []
                     )
@@ -91,7 +81,7 @@ class IndonesiaRegionsSelect
                         return $state ? $state : null;
                     })
                     ->reactive()
-                // ->disabled(fn(Get $get) => blank($get('kecamatan'))),
+                    ->disabled(fn(Get $get) => blank($get('kecamatan'))),
             ]);
     }
 }
