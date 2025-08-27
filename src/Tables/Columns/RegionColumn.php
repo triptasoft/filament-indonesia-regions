@@ -2,8 +2,8 @@
 
 namespace Triptasoft\FilamentIndonesiaRegions\Tables\Columns;
 
-use Illuminate\Support\Facades\Http;
 use Filament\Tables\Columns\Column;
+use Illuminate\Support\Facades\Http;
 
 class RegionColumn extends Column
 {
@@ -19,6 +19,7 @@ class RegionColumn extends Column
     public function type(string $type): static
     {
         $this->regionType = $type;
+
         return $this;
     }
 
@@ -27,7 +28,7 @@ class RegionColumn extends Column
         $record = $this->getRecord();
         $value = $record->{$this->getName()};
 
-        if (!$value) {
+        if (! $value) {
             return null;
         }
 
@@ -42,7 +43,7 @@ class RegionColumn extends Column
 
         $cacheKey = "{$this->regionType}.{$parentCode}";
 
-        if (!isset(static::$cache[$cacheKey])) {
+        if (! isset(static::$cache[$cacheKey])) {
             $url = 'https://wilayah.id';
             $endpoint = match ($this->regionType) {
                 'provinsi' => '/api/provinces.json',

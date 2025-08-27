@@ -31,7 +31,7 @@ class IndonesiaRegionsSelect
             ->schema([
                 Select::make('provinsi')
                     ->label('Provinsi')
-                    ->options(fn() => self::fetchWilayah('api/provinces'))
+                    ->options(fn () => self::fetchWilayah('api/provinces'))
                     ->reactive()
                     ->suffix(function ($state, $get) {
                         return $state ? $state : null;
@@ -51,7 +51,7 @@ class IndonesiaRegionsSelect
                             : []
                     )
                     ->reactive()
-                    ->disabled(fn(Get $get) => blank($get('provinsi')))
+                    ->disabled(fn (Get $get) => blank($get('provinsi')))
                     ->afterStateUpdated(function (Set $set) {
                         $set('kecamatan', null);
                         $set('desa', null);
@@ -66,8 +66,8 @@ class IndonesiaRegionsSelect
                             : []
                     )
                     ->reactive()
-                    ->disabled(fn(Get $get) => blank($get('kabupaten')))
-                    ->afterStateUpdated(fn(Set $set) => $set('desa', null)),
+                    ->disabled(fn (Get $get) => blank($get('kabupaten')))
+                    ->afterStateUpdated(fn (Set $set) => $set('desa', null)),
 
                 Select::make('desa')
                     ->label('Desa/Kelurahan')
@@ -81,7 +81,7 @@ class IndonesiaRegionsSelect
                         return $state ? $state : null;
                     })
                     ->reactive()
-                    ->disabled(fn(Get $get) => blank($get('kecamatan'))),
+                    ->disabled(fn (Get $get) => blank($get('kecamatan'))),
             ]);
     }
 }

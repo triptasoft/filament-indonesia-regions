@@ -16,6 +16,7 @@ class RegionEntry extends Entry
     public function type(string $type): static
     {
         $this->regionType = $type;
+
         return $this;
     }
 
@@ -24,7 +25,7 @@ class RegionEntry extends Entry
         $record = $this->getRecord();
         $value = $record->{$this->getName()};
 
-        if (!$value) {
+        if (! $value) {
             return null;
         }
 
@@ -39,7 +40,7 @@ class RegionEntry extends Entry
 
         $cacheKey = "{$this->regionType}.{$parentCode}";
 
-        if (!isset(static::$cache[$cacheKey])) {
+        if (! isset(static::$cache[$cacheKey])) {
             $url = 'https://wilayah.id';
             $endpoint = match ($this->regionType) {
                 'provinsi' => '/api/provinces.json',
