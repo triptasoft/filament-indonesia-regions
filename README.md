@@ -40,9 +40,9 @@ return [
 
 ## Form Field
 ```php
-use Triptasoft\FilamentIndonesiaRegions\Forms\Components\IndonesiaRegionsSelect;
+use Triptasoft\FilamentIndonesiaRegions\Forms\Components\RegionSelect;
 
-IndonesiaRegionsSelect::make()->label('Wilayah Indonesia'),
+RegionSelect::make()->label('Wilayah Indonesia'),
 ```
 
 ## Table Column

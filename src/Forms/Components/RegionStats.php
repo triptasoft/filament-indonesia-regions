@@ -9,7 +9,7 @@ use Filament\Schemas\Components\Utilities\Set;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
-class IndonesiaRegionsStats
+class RegionStats
 {
     protected static string $baseUrl = 'https://api.datawilayah.com';
 

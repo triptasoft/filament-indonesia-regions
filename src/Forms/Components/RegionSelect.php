@@ -6,24 +6,11 @@ use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Http;
+use Triptasoft\FilamentIndonesiaRegions\Support\RegionCache;
 
-class IndonesiaRegionsSelect
+class RegionSelect
 {
     protected static string $baseUrl = 'https://wilayah.id';
-
-    protected static function fetchWilayah(string $endpoint): array
-    {
-        return Cache::remember("wilayah-{$endpoint}", now()->addDay(), function () use ($endpoint) {
-            $url = self::$baseUrl . '/' . $endpoint . '.json';
-
-            return Http::get($url)
-                ->collect('data')
-                ->mapWithKeys(fn ($item) => [$item['code'] => $item['name']])
-                ->toArray();
-        });
-    }
 
     public static function make(): Fieldset
     {
@@ -31,57 +18,75 @@ class IndonesiaRegionsSelect
             ->schema([
                 Select::make('provinsi')
                     ->label('Provinsi')
-                    ->options(fn () => self::fetchWilayah('api/provinces'))
+                    ->prefixIcon('heroicon-o-globe-asia-australia')
+                    ->searchable()
+                    ->preload()
                     ->reactive()
-                    ->suffix(function ($state, $get) {
-                        return $state ? $state : null;
-                    })
+                    ->options(fn() => RegionCache::get('api/provinces'))
                     ->afterStateUpdated(function (Set $set) {
                         $set('kabupaten', null);
                         $set('kecamatan', null);
                         $set('desa', null);
+                    })
+                    ->suffix(function ($state) {
+                        return $state;
                     }),
 
                 Select::make('kabupaten')
                     ->label('Kabupaten/Kota')
                     ->prefixIcon('heroicon-o-globe-asia-australia')
+                    ->searchable()
+                    ->preload()
+                    ->reactive()
+                    // ->disabled(fn(Get $get) => blank($get('provinsi')))
                     ->options(
-                        fn (Get $get) => $get('provinsi')
-                            ? self::fetchWilayah("api/regencies/{$get('provinsi')}")
+                        fn(Get $get) =>
+                        $get('provinsi')
+                            ? RegionCache::get("api/regencies/{$get('provinsi')}")
                             : []
                     )
-                    ->reactive()
-                    ->disabled(fn (Get $get) => blank($get('provinsi')))
                     ->afterStateUpdated(function (Set $set) {
                         $set('kecamatan', null);
                         $set('desa', null);
+                    })
+                    ->suffix(function ($state, $get) {
+                        return $state ? $state : null;
                     }),
 
                 Select::make('kecamatan')
                     ->label('Kecamatan')
                     ->prefixIcon('heroicon-o-globe-asia-australia')
+                    ->searchable()
+                    ->preload()
+                    ->reactive()
+                    // ->disabled(fn(Get $get) => blank($get('kabupaten')))
                     ->options(
-                        fn (Get $get) => $get('kabupaten')
-                            ? self::fetchWilayah("api/districts/{$get('kabupaten')}")
+                        fn(Get $get) =>
+                        $get('provinsi')
+                            ? RegionCache::get("api/districts/{$get('kabupaten')}")
                             : []
                     )
-                    ->reactive()
-                    ->disabled(fn (Get $get) => blank($get('kabupaten')))
-                    ->afterStateUpdated(fn (Set $set) => $set('desa', null)),
+                    ->afterStateUpdated(fn(Set $set) => $set('desa', null))
+                    ->suffix(function ($state, $get) {
+                        return $state ? $state : null;
+                    }),
 
                 Select::make('desa')
                     ->label('Desa/Kelurahan')
                     ->prefixIcon('heroicon-o-globe-asia-australia')
+                    ->searchable()
+                    ->preload()
+                    ->reactive()
+                    // ->disabled(fn(Get $get) => blank($get('kecamatan')))
                     ->options(
-                        fn (Get $get) => $get('kecamatan')
-                            ? self::fetchWilayah("api/villages/{$get('kecamatan')}")
+                        fn(Get $get) =>
+                        $get('provinsi')
+                            ? RegionCache::get("api/villages/{$get('kecamatan')}")
                             : []
                     )
                     ->suffix(function ($state, $get) {
                         return $state ? $state : null;
-                    })
-                    ->reactive()
-                    ->disabled(fn (Get $get) => blank($get('kecamatan'))),
+                    }),
             ]);
     }
 }

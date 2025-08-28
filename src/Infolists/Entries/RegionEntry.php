@@ -3,7 +3,7 @@
 namespace Triptasoft\FilamentIndonesiaRegions\Infolists\Entries;
 
 use Filament\Infolists\Components\Entry;
-use Illuminate\Support\Facades\Http;
+use Triptasoft\FilamentIndonesiaRegions\Support\RegionCache;
 
 class RegionEntry extends Entry
 {
@@ -23,38 +23,21 @@ class RegionEntry extends Entry
     public function getState(): ?string
     {
         $record = $this->getRecord();
-        $value = $record->{$this->getName()};
+        $value = $record?->{$this->getName()};
 
         if (! $value) {
             return null;
         }
 
-        // Tentukan kode induk untuk panggilan API
         $parentCode = match ($this->regionType) {
-            'provinsi' => null,
             'kabupaten' => $record->provinsi ?? null,
             'kecamatan' => $record->kabupaten ?? null,
-            'desa' => $record->kecamatan ?? null,
-            default => null,
+            'desa'      => $record->kecamatan ?? null,
+            default     => null,
         };
 
-        $cacheKey = "{$this->regionType}.{$parentCode}";
+        $regions = RegionCache::getByType($this->regionType, $parentCode);
 
-        if (! isset(static::$cache[$cacheKey])) {
-            $url = 'https://wilayah.id';
-            $endpoint = match ($this->regionType) {
-                'provinsi' => '/api/provinces.json',
-                'kabupaten' => "/api/regencies/{$parentCode}.json",
-                'kecamatan' => "/api/districts/{$parentCode}.json",
-                'desa' => "/api/villages/{$parentCode}.json",
-                default => '/api/provinces.json',
-            };
-
-            static::$cache[$cacheKey] = Http::get($url . $endpoint)
-                ->collect('data')
-                ->keyBy('code');
-        }
-
-        return static::$cache[$cacheKey][$value]['name'] ?? $value;
+        return $regions[$value] ?? $value;
     }
 }

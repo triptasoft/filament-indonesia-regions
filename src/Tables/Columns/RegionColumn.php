@@ -3,7 +3,7 @@
 namespace Triptasoft\FilamentIndonesiaRegions\Tables\Columns;
 
 use Filament\Tables\Columns\Column;
-use Illuminate\Support\Facades\Http;
+use Triptasoft\FilamentIndonesiaRegions\Support\RegionCache;
 
 class RegionColumn extends Column
 {
@@ -11,10 +11,7 @@ class RegionColumn extends Column
 
     protected string $type = 'region';
 
-    protected string $regionType = 'provinsi'; // default type
-
-    // Cache data per parent code
-    protected static array $cache = [];
+    protected string $regionType = 'provinsi';
 
     public function type(string $type): static
     {
@@ -26,38 +23,21 @@ class RegionColumn extends Column
     public function getState(): ?string
     {
         $record = $this->getRecord();
-        $value = $record->{$this->getName()};
+        $value = $record?->{$this->getName()};
 
         if (! $value) {
             return null;
         }
 
-        // Tentukan kode induk untuk panggilan API
         $parentCode = match ($this->regionType) {
-            'provinsi' => null,
             'kabupaten' => $record->provinsi ?? null,
             'kecamatan' => $record->kabupaten ?? null,
-            'desa' => $record->kecamatan ?? null,
-            default => null,
+            'desa'      => $record->kecamatan ?? null,
+            default     => null,
         };
 
-        $cacheKey = "{$this->regionType}.{$parentCode}";
+        $regions = RegionCache::getByType($this->regionType, $parentCode);
 
-        if (! isset(static::$cache[$cacheKey])) {
-            $url = 'https://wilayah.id';
-            $endpoint = match ($this->regionType) {
-                'provinsi' => '/api/provinces.json',
-                'kabupaten' => "/api/regencies/{$parentCode}.json",
-                'kecamatan' => "/api/districts/{$parentCode}.json",
-                'desa' => "/api/villages/{$parentCode}.json",
-                default => '/api/provinces.json',
-            };
-
-            static::$cache[$cacheKey] = Http::get($url . $endpoint)
-                ->collect('data')
-                ->keyBy('code');
-        }
-
-        return static::$cache[$cacheKey][$value]['name'] ?? $value;
+        return $regions[$value] ?? $value;
     }
 }
