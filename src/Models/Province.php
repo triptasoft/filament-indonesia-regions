@@ -3,8 +3,8 @@
 namespace Triptasoft\FilamentIndonesiaRegions\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Sushi\Sushi;
 use Illuminate\Support\Facades\Http;
+use Sushi\Sushi;
 
 class Province extends Model
 {
@@ -16,8 +16,9 @@ class Province extends Model
     {
         return cache()->remember('provinces', 86400, function () {
             $response = Http::get('https://wilayah.id/api/provinces.json');
+
             return collect($response->json('data'))
-                ->map(fn($item) => [
+                ->map(fn ($item) => [
                     'code' => $item['code'],
                     'name' => $item['name'],
                 ])

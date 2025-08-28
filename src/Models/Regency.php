@@ -3,8 +3,8 @@
 namespace Triptasoft\FilamentIndonesiaRegions\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Sushi\Sushi;
 use Illuminate\Support\Facades\Http;
+use Sushi\Sushi;
 
 class Regency extends Model
 {
@@ -15,8 +15,9 @@ class Regency extends Model
     public static function byProvince($provinceCode): array
     {
         $response = Http::get("https://wilayah.id/api/regencies/{$provinceCode}.json");
+
         return collect($response->json('data'))
-            ->map(fn($item) => [
+            ->map(fn ($item) => [
                 'code' => $item['code'],
                 'name' => $item['name'],
             ])

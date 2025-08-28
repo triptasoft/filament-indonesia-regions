@@ -3,8 +3,8 @@
 namespace Triptasoft\FilamentIndonesiaRegions\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Sushi\Sushi;
 use Illuminate\Support\Facades\Http;
+use Sushi\Sushi;
 
 class Village extends Model
 {

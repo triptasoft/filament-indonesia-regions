@@ -32,8 +32,8 @@ class RegionEntry extends Entry
         $parentCode = match ($this->regionType) {
             'kabupaten' => $record->provinsi ?? null,
             'kecamatan' => $record->kabupaten ?? null,
-            'desa'      => $record->kecamatan ?? null,
-            default     => null,
+            'desa' => $record->kecamatan ?? null,
+            default => null,
         };
 
         $regions = RegionCache::getByType($this->regionType, $parentCode);

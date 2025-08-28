@@ -28,11 +28,11 @@ class RegionCache
     public static function getByType(string $type, ?string $parentCode = null): array
     {
         return match ($type) {
-            'provinsi'  => self::get('api/provinces'),
+            'provinsi' => self::get('api/provinces'),
             'kabupaten' => $parentCode ? self::get("api/regencies/{$parentCode}") : [],
             'kecamatan' => $parentCode ? self::get("api/districts/{$parentCode}") : [],
-            'desa'      => $parentCode ? self::get("api/villages/{$parentCode}") : [],
-            default     => [],
+            'desa' => $parentCode ? self::get("api/villages/{$parentCode}") : [],
+            default => [],
         };
     }
 }

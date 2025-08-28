@@ -22,7 +22,7 @@ class RegionSelect
                     ->searchable()
                     ->preload()
                     ->reactive()
-                    ->options(fn() => RegionCache::get('api/provinces'))
+                    ->options(fn () => RegionCache::get('api/provinces'))
                     ->afterStateUpdated(function (Set $set) {
                         $set('kabupaten', null);
                         $set('kecamatan', null);
@@ -40,8 +40,7 @@ class RegionSelect
                     ->reactive()
                     // ->disabled(fn(Get $get) => blank($get('provinsi')))
                     ->options(
-                        fn(Get $get) =>
-                        $get('provinsi')
+                        fn (Get $get) => $get('provinsi')
                             ? RegionCache::get("api/regencies/{$get('provinsi')}")
                             : []
                     )
@@ -61,12 +60,11 @@ class RegionSelect
                     ->reactive()
                     // ->disabled(fn(Get $get) => blank($get('kabupaten')))
                     ->options(
-                        fn(Get $get) =>
-                        $get('provinsi')
+                        fn (Get $get) => $get('provinsi')
                             ? RegionCache::get("api/districts/{$get('kabupaten')}")
                             : []
                     )
-                    ->afterStateUpdated(fn(Set $set) => $set('desa', null))
+                    ->afterStateUpdated(fn (Set $set) => $set('desa', null))
                     ->suffix(function ($state, $get) {
                         return $state ? $state : null;
                     }),
@@ -79,8 +77,7 @@ class RegionSelect
                     ->reactive()
                     // ->disabled(fn(Get $get) => blank($get('kecamatan')))
                     ->options(
-                        fn(Get $get) =>
-                        $get('provinsi')
+                        fn (Get $get) => $get('provinsi')
                             ? RegionCache::get("api/villages/{$get('kecamatan')}")
                             : []
                     )
