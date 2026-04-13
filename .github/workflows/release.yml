@@ -20,6 +20,6 @@ jobs:
  
       # Create a new release and use the source code from the tag for this release
       - name: Release and publish release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
  
      # That's it! All done 🚀
